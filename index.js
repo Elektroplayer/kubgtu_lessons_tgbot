@@ -6,17 +6,25 @@ import { parse } from "node-html-parser"
 
 config() // Инициализация переменных среды
 
+// Класс парсера делал отдельно. Потом было удобнее просто его вставить почти без изменений, чем убирать класс и строить обычные функции
 class Main {
     /**
-     * @param {string[]} args 
-     * @param {Number} kurs 
-     * @param {Number} semestr 
-     * @param {string} group 
+     * @param {number} fakid ID факультета
+     * @param {number} kurs Курс
+     * @param {number} semestr Семестр
+     * @param {string} group Полный номер группы
      */
-    constructor(kurs, semestr, group = '22-КБ-ИВ1') {
-        this.URL = `https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&fak_id=516&kurs=${kurs}&gr=${group}&ugod=${new Date().getFullYear()}&semestr=${semestr}`
+    constructor(fakid, kurs, semestr, group = '22-КБ-ИВ1') { // Конструктор делает ссылку, к которой будем обращаться
+        this.URL = `https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&fak_id=${fakid}&kurs=${kurs}&gr=${group}&ugod=${new Date().getFullYear()}&semestr=${semestr}`
     }
 
+    /**
+     * Возвращает строку с парами в указанный день
+     * Без аргументов даёт пары в сегодняшний день
+     * @param {number} day 
+     * @param {boolean} week 
+     * @returns {string}
+     */
     async getLessons(day = new Date().getDay(), week = this.evenWeek()) {
         this.even = week ? 2 : 1
         this.day  = day
@@ -38,8 +46,6 @@ class Main {
 
         let responseText = `<b>${this.dayName(this.day)} / ${this.even == 2 ? 'Чётная' : 'Нечётная'} неделя</b>\n`
 
-        // console.log(this.dayName(this.day))
-
         for(let i=1;;i++) {
             if(!this.getLesson(this.even, this.day, i) && i == 1) {
                 responseText += '\nПар нет! Передохни:з'
@@ -47,18 +53,26 @@ class Main {
             }
             if(!this.getLesson(this.even, this.day, i)) break
 
-            //console.log('\n' + this.getLesson(this.even, this.day, i))
             responseText += '\n' + this.getLesson(this.even, this.day, i)
         }
 
         return responseText
     }
 
+    /**
+     * Возвращает строку с днём недели по номеру этого дня недели
+     * @param {number} day 
+     * @returns {string}
+     */
     dayName(day) {
         let days = ['ВОСКРЕСЕНЬЕ', 'ПОНЕДЕЛЬНИК', 'ВТОРНИК', 'СРЕДА', 'ЧЕТВЕРГ', 'ПЯТНИЦА', 'СУББОТА']
         return days[day]
     }
 
+    /**
+     * Возвращает true если неделя чётная
+     * @returns {boolean}
+     */
     evenWeek() {
         let date  = new Date()
         let now   = date.getTime();
@@ -68,6 +82,13 @@ class Main {
         return week%2 == 0
     }
 
+    /**
+     * Возвращает строку с информацией об одной указанной паре
+     * @param {number} week 
+     * @param {number} day 
+     * @param {number} num 
+     * @returns {string}
+     */
     getLesson(week, day, num) {
         if(!this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)) return null
 
@@ -81,37 +102,37 @@ class Main {
     }
 }
 
-const bot = new Telegraf(process.env.TOKEN) // Создание объекта бота
-const agent = new https.Agent({ // Для отклонения аутентификации
-    rejectUnauthorized: false,
-});
+const bot    = new Telegraf(process.env.TOKEN) // Создание объекта бота
+const agent  = new https.Agent({ rejectUnauthorized: false }) // Для отклонения аутентификации
+let main     = new Main(516, 1, 1) // Класс парсера
 
+// Нужно для самих кнопок и чтобы они нажимались
 const days = ['Нечёт Пн', 'Нечёт Вт', 'Нечёт Ср', 'Нечёт Чт', 'Нечёт Пт', 'Нечёт Сб']
 const daysEven = ['Чёт Пн', 'Чёт Вт', 'Чёт Ср', 'Чёт Чт', 'Чёт Пт', 'Чёт Сб']
 
-let main = new Main(1, 1)
-
-function buttons() {
+function buttons() { // Возвращает обычные кнопки
     return Markup.keyboard([
         ['Расписание на сегодня', 'Расписание на завтра'],
         ['Выбрать другой день']
     ]).resize()
 }
 
-function anotherDay() {
+function anotherDay() { // Возвращает кнопки, которые используются для выбора дня
     return Markup.keyboard([
         days,
         daysEven
     ]).resize()
 }
 
+// При вводе команды /start
 bot.start(async (ctx) => {
     ctx.reply(
-        'Здарова. Показываю расписание для группы 22-КБ-ИВ1',
+        'Здарова. Показываю расписание для группы 22-КБ-ИВ1.',
         buttons()
     )
 })
 
+// Остальное при вводе текста
 bot.hears('Расписание на сегодня', async (ctx) => {
     let text = await main.getLessons()
     ctx.replyWithHTML(text, buttons())
@@ -126,6 +147,7 @@ bot.hears('Выбрать другой день', async (ctx) => {
     ctx.replyWithHTML('Выбери день', anotherDay())
 })
 
+// Это сделано для выбора конкретного дня
 days.forEach((elm, i) => {
     bot.hears(elm, async (ctx) => {
         let text = await main.getLessons(i + 1, false)
@@ -140,4 +162,9 @@ daysEven.forEach((elm, i) => {
     })
 })
 
-bot.launch()
+// Это если человек херню сморозил
+bot.on('text', ctx => {
+    ctx.reply('Не понял тебя, попробуй ещё раз', buttons())
+})
+
+bot.launch() // Запуск бота
