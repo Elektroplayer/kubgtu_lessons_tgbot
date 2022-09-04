@@ -2,8 +2,6 @@ import fetch from "node-fetch";
 import https from "https";
 import { parse } from "node-html-parser";
 
-const agent = new https.Agent({ rejectUnauthorized: false }); // Для отклонения аутентификации
-
 export default class Parser {
     /**
      * @param {number} fakid ID факультета
@@ -35,7 +33,7 @@ export default class Parser {
             headers: {
                 "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
             },
-            agent
+            agent: new https.Agent({ rejectUnauthorized: false })
         });
 
         let text = await res.text();
@@ -64,23 +62,6 @@ export default class Parser {
     dayName(day) {
         let days = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
         return days[day];
-    }
-
-    /**
-     * Возвращает true если неделя чётная
-     * @returns {boolean}
-     */
-    evenWeek() {
-        // let date  = new Date();
-        // let now   = date.getTime();
-        // let today = new Date(date.getFullYear(), date.getMonth(), 0).getTime(); 
-        // let week  = Math.ceil((now - today) / (1000 * 60 * 60 * 24 * 7));
-
-        // console.log(week);
-
-
-        
-        //return week%2 == 0;
     }
 
     /**

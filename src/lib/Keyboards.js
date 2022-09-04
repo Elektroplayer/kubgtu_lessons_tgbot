@@ -3,9 +3,32 @@ import { days, daysEven } from "./Utils.js";
 export let instKeyboard = [
     [
         {
+            "text": "ИНГЭ",
+            "callback_data": "settings_inst_495"
+        },{
             "text": "ИКСиИБ",
             "callback_data": "settings_inst_516"
+        },{
+            "text": "ИПиПП",
+            "callback_data": "settings_inst_490"
+        },{
+            "text": "ИЭУБ",
+            "callback_data": "settings_inst_29"
         }
+    ],[
+        {
+            "text": "ИСТИ",
+            "callback_data": "settings_inst_538"
+        },{
+            "text": "ИМРИТТС",
+            "callback_data": "settings_inst_539"
+        },{
+            "text": "ИФН",
+            "callback_data": "settings_inst_540"
+        },{
+            "text": "ИТК",
+            "callback_data": "settings_inst_541"
+        },
     ]
 ];
 
@@ -26,6 +49,9 @@ export const kursKeyboard = [
         },{
             "text": "5",
             "callback_data": "settings_kurs_5"
+        },{
+            "text": "6",
+            "callback_data": "settings_kurs_6"
         },
     ]
 ];
