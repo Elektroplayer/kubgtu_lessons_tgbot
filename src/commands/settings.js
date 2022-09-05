@@ -16,6 +16,8 @@ export default class TodayCommand extends Command {
     exec(bot, user, msg) {
         let replytext = `Приветствую, ${msg.from.username}\n\n`;
 
+        user.clearData();
+
         replytext += "Ты включил перенастройку бота.\n\nКакой у тебя институт. Если твоего тут нет, значит он появится в будущем";
 
         bot.sendMessage(user.id, replytext, {

@@ -7,19 +7,24 @@ export default class User {
     group = "";
 
     /**
-     * @type {Parser}
+     * Класс, реализующий парсинг расписания
+     * @type {Parser | null}
      */
     lessons = null;
 
     /**
+     * Класс пользователя
      * @param {String} userID 
      */
     constructor (userID) {
         this.id = userID;
     }
 
+    /**
+     * Реализует восстановление данных их БД
+     */
     async getData() {
-        let model = await Users.findOne({userID: this.id}).exec();
+        let model = await Users.findOne({userId: this.id}).exec();
 
         if(model && model?.inst_id && model?.kurs && model?.group) {
             this.inst_id = model.inst_id;
@@ -30,10 +35,22 @@ export default class User {
         }
     }
 
+    /**
+     * Локально очищает данные
+     */
+    clearData() {
+        this.inst_id = 0;
+        this.kurs = 0;
+        this.group = "";
+    }
+
+    /**
+     *  Обновление данных на БД
+     */
     async updateData() {
         this.lessons = new Parser(this.inst_id, this.kurs, this.group);
 
-        let model = await Users.findOne({userID: this.id}).exec();
+        let model = await Users.findOne({userId: this.id}).exec();
 
         if(!model) {
             model = new Users({
@@ -42,13 +59,11 @@ export default class User {
                 kurs: this.kurs,
                 group: this.group
             });
-
-            return model.save().catch(err => console.log(err));
+        } else {
+            model.inst_id = this.inst_id;
+            model.kurs = this.kurs;
+            model.group = this.group;
         }
-
-        model.inst_id = this.inst_id;
-        model.kurs = this.kurs;
-        model.group = this.group;
 
         model.save().catch(err => console.log(err));
     }

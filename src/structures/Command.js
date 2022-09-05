@@ -1,5 +1,8 @@
 export default class Command {
     
+    /**
+     * Класс команды
+     */
     constructor() {
         this.name = "";
     }
