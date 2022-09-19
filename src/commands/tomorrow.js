@@ -1,5 +1,4 @@
 import Command from "../structures/Command.js";
-// import { anotherDay, instKeyboard, kursKeyboard, mainKeyboard } from "../lib/utils.js";
 // eslint-disable-next-line no-unused-vars
 import TelegramBot from "node-telegram-bot-api";
 // eslint-disable-next-line no-unused-vars

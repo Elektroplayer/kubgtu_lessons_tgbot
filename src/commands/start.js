@@ -14,8 +14,6 @@ export default class TodayCommand extends Command {
      * @param {TelegramBot.Message} msg 
      */
     exec(bot, user, msg) {
-        console.log(msg);
-
         let replytext = `Приветствую, ${msg.from.username}\n\n`;
 
         if(msg.chat.id == user.id) {
