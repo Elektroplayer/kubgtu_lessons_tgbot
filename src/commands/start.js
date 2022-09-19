@@ -6,7 +6,7 @@ import TelegramBot from "node-telegram-bot-api";
 import User from "../structures/User.js";
 
 export default class TodayCommand extends Command {
-    name = "/start";
+    name = ["/start", "/start@kubgtu_lessons_bot"];
     
     /**
      * @param {TelegramBot} bot 
@@ -14,27 +14,41 @@ export default class TodayCommand extends Command {
      * @param {TelegramBot.Message} msg 
      */
     exec(bot, user, msg) {
+        console.log(msg);
+
         let replytext = `Приветствую, ${msg.from.username}\n\n`;
 
-        if(!user.inst_id || !user.group || !user.kurs) {
-            replytext += "У тебя не установлена некоторая важная для меня информация. Подскажи пожалуйста,\n\nКакой у тебя институт. Если твоего тут нет, значит он появится в будущем";
-
-            bot.sendMessage(user.id, replytext, {
-                reply_markup: {
-                    inline_keyboard: instKeyboard,
-                    resize_keyboard: true,
-                }
-            });
-
+        if(msg.chat.id == user.id) {
+            if(!user.inst_id || !user.group || !user.kurs) {
+                replytext += "У тебя не установлена некоторая важная для меня информация. Подскажи пожалуйста,\n\nКакой у тебя институт. Если твоего тут нет, значит он появится в будущем";
+    
+                bot.sendMessage(msg.chat.id, replytext, {
+                    reply_markup: {
+                        inline_keyboard: instKeyboard,
+                        resize_keyboard: true,
+                    }
+                });
+    
+            } else {
+                replytext += "Можешь выбрать действие снизу.";
+    
+                bot.sendMessage(msg.chat.id, replytext, {
+                    reply_markup: {
+                        keyboard: mainKeyboard,
+                        resize_keyboard: true,
+                    }
+                });
+            }
         } else {
-            replytext += "Можешь выбрать действие снизу.";
-
-            bot.sendMessage(user.id, replytext, {
-                reply_markup: {
-                    keyboard: mainKeyboard,
-                    resize_keyboard: true,
-                }
-            });
+            if(!user.inst_id || !user.group || !user.kurs) {
+                replytext += "Конкретно у тебя не установлена некоторая важная для меня информация. Давай поговорим в личных сообщениях.";
+    
+                bot.sendMessage(msg.chat.id, replytext);
+            } else {
+                replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра";
+    
+                bot.sendMessage(msg.chat.id, replytext);
+            }
         }
     }
 }

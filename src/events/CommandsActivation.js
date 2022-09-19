@@ -13,9 +13,9 @@ export default class CommandActivatorEvent extends Event {
             return command.choose(this.main.bot, user, msg);
         }
 
-        let command = this.main.commands.find(elm => elm.name == msg.text);
+        let command = this.main.commands.find(elm => elm.name == msg.text || elm.name.includes(msg.text));
         if(command) command.exec(this.main.bot, user, msg);
-        else this.main.bot.sendMessage(user.id, "Не понял тебя, повтори набор.", {
+        else this.main.bot.sendMessage(msg.chat.id, "Не понял тебя, повтори набор.", {
             reply_markup: {
                 keyboard: mainKeyboard,
                 resize_keyboard: true,

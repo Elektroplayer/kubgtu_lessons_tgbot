@@ -15,7 +15,9 @@ export default class TodayCommand extends Command {
      * @param {User} user 
      * @param {TelegramBot.Message} msg 
      */
-    async exec(bot, user) {
+    async exec(bot, user, msg) {
+        if(msg.chat.id !== user.id) return;
+        
         if(!user.lessons) return bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
         
         bot.sendMessage(

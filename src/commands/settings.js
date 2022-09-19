@@ -6,7 +6,7 @@ import TelegramBot from "node-telegram-bot-api";
 import User from "../structures/User.js";
 
 export default class TodayCommand extends Command {
-    name = "/settings";
+    name = ["/settings", "/settings@kubgtu_lessons_bot"];
     
     /**
      * @param {TelegramBot} bot 
@@ -14,6 +14,8 @@ export default class TodayCommand extends Command {
      * @param {TelegramBot.Message} msg 
      */
     exec(bot, user, msg) {
+        if(msg.chat.id !== user.id) return bot.sendMessage(msg.chat.id, "Эта команда не поддерживается в групповых чатах!");
+
         let replytext = `Приветствую, ${msg.from.username}\n\n`;
 
         user.clearData();
