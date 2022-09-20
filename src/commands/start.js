@@ -28,7 +28,7 @@ export default class TodayCommand extends Command {
                 });
     
             } else {
-                replytext += "Можешь выбрать действие снизу.";
+                replytext += "Поддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
     
                 bot.sendMessage(msg.chat.id, replytext, {
                     reply_markup: {
@@ -43,7 +43,7 @@ export default class TodayCommand extends Command {
     
                 bot.sendMessage(msg.chat.id, replytext);
             } else {
-                replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра";
+                replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n\nПоддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
     
                 bot.sendMessage(msg.chat.id, replytext);
             }
