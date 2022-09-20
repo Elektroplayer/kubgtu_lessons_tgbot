@@ -8,7 +8,7 @@ export default class User {
     kurs = 0;
     group = "";
     dbResponse = null;
-    count = 0;
+    count = 20;
 
     /**
      * @type {Group | null}

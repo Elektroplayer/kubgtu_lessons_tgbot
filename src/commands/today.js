@@ -30,7 +30,7 @@ export default class TodayCommand extends Command {
             }
         );
 
-        if(user.count > 20 && user.id !== msg.chat.id) {
+        if(user.count > 20 && user.id == msg.chat.id) {
             let messages = ["Нравится бот? Поддержи рублём!", "Достаточно одно рубля с 70 человек, чтобы бот продолжил работать ещё месяц!", "Обычно закидывают на чай, но сюда закидывают на шаурму и хост)"];
 
             bot.sendMessage(
