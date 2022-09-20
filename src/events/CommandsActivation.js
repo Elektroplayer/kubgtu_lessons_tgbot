@@ -24,7 +24,7 @@ export default class CommandActivatorEvent extends Event {
 
             command.exec(this.main.bot, user, msg);
         }
-        else this.main.bot.sendMessage(msg.chat.id, "Не понял тебя, повтори набор.", {
+        else if(msg.from.id == msg.chat.id) this.main.bot.sendMessage(msg.chat.id, "Не понял тебя, повтори набор.", {
             reply_markup: {
                 keyboard: mainKeyboard,
                 resize_keyboard: true,
