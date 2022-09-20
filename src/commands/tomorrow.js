@@ -14,12 +14,12 @@ export default class TomorrowCommand extends Command {
      * @param {TelegramBot.Message} msg 
      */
     async exec(bot, user, msg) {
-        if(!user.lessons) return bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
+        if(!user.group) return bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
 
         let now = new Date();
         let date = new Date( now.getFullYear(), now.getMonth(), now.getDate()+1 );
 
-        let text = await user.lessons.getLessons(date.getDay(), date.getWeek()%2 == 0);
+        let text = await user.getSchedule(date.getDay(), date.getWeek()%2 == 0);
         
         bot.sendMessage(
             msg.chat.id,
@@ -31,5 +31,22 @@ export default class TomorrowCommand extends Command {
                 }
             }
         );
+
+        if(user.count > 20 && user.id !== msg.chat.id) {
+            let messages = ["Нравится бот? Поддержи рублём!", "Достаточно одно рубля с 70 человек, чтобы бот продолжил работать ещё месяц!", "Обычно закидывают на чай, но сюда закидывают на шаурму и хост)"];
+
+            bot.sendMessage(
+                msg.chat.id,
+                messages[ Math.floor( Math.random() * messages.length ) ] + "\nqiwi.com/n/ELECTRO303",
+                {
+                    parse_mode: "HTML",
+                    reply_markup: {
+                        remove_keyboard: user.id !== msg.chat.id
+                    }
+                }
+            );
+
+            user.count = 0;
+        } else user.count++;
     }
 }

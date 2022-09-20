@@ -13,22 +13,7 @@ export default class Parser {
         this.URL = `https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&fak_id=${fakid}&kurs=${kurs}&gr=${group}&ugod=${new Date().getFullYear()}&semestr=${semestr}`;
     }
 
-    /**
-     * Возвращает строку с парами в указанный день
-     * Без аргументов даёт пары в сегодняшний день
-     * @param {number} day 
-     * @param {boolean} week 
-     * @returns {string}
-     */
-    async getLessons(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
-        this.even = week ? 2 : 1;
-        this.day  = day;
-
-        if(this.day>6) {
-            this.day = 0;
-            this.even = this.even == 1 ? 2 : 1;
-        }
-
+    async parseSchedule() {
         let res = await fetch(this.URL, {
             headers: {
                 "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36",
@@ -39,19 +24,27 @@ export default class Parser {
         let text = await res.text();
         this.root = parse(text);
 
-        let responseText = `<b>${this.dayName(this.day)} / ${this.even == 2 ? "Чётная" : "Нечётная"} неделя</b>\n`;
+        let out = [];
 
-        for(let i=1;;i++) {
-            if(!this.getLesson(this.even, this.day, i) && i == 1) {
-                responseText += "\nПар нет! Передохни:з";
-                break;
+        for(let w = 1;w<=2;w++) {
+            for(let d = 1;d<=6;d++) {
+                let schedule = [];
+                
+                for(let i = 1;;i++) {
+                    if(!this.getLessonRaw(w,d,i)) break;
+
+                    schedule.push(this.getLessonRaw(w,d,i));
+                }
+
+                if(schedule.length > 0) out.push({
+                    daynum: d,
+                    even: w == 2,
+                    schedule
+                });
             }
-            if(!this.getLesson(this.even, this.day, i)) break;
-
-            responseText += "\n" + this.getLesson(this.even, this.day, i);
         }
 
-        return responseText;
+        return out;
     }
 
     /**
@@ -65,21 +58,50 @@ export default class Parser {
     }
 
     /**
-     * Возвращает строку с информацией об одной указанной паре
+     * Возвращает объект с информацией об одной указанной паре
      * @param {number} week 
      * @param {number} day 
      * @param {number} num 
      * @returns {string}
      */
-    getLesson(week, day, num) {
+    getLessonRaw(week, day, num) {
         if(!this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)) return null;
 
-        return this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)
+        let out = {
+            number: null,
+            time: null,
+            name: null,
+            paraType: null,
+            teacher: null,
+            auditory: null,
+            remark: null,
+            percent: null
+        };
+
+        let firstTextArray = this.root.querySelector(`#heading_n_${week}_d_${day}_i_${num}`).text
+            .trim()
+            .split("/")
+            .map(elm => {return elm.trim();});
+        
+        out.number = firstTextArray[0].slice(0,1);
+
+        out.time = firstTextArray[0].match(/\(.+\)/g)[0];
+        out.time = out.time.substring(1,out.time.length-1);
+
+        out.name = firstTextArray[1];
+        out.paraType = firstTextArray[2];
+
+        this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)
             .querySelector(".panel-body")
             .childNodes
             .filter(elm => elm?.constructor?.name == "HTMLElement")
-            .reduce((text, elm) => {
-                return text + "  " + elm.text + "\n";
-            }, this.root.querySelector(`#heading_n_${week}_d_${day}_i_${num}`).text.trim() + "\n" );
+            .forEach(elm => {
+                if(elm.text.startsWith("Преподаватель:")) out.teacher = elm.text.slice(15).trim() == "" ? "Не назначен" : elm.text.slice(15).trim();
+                if(elm.text.startsWith("Аудитория:")) out.auditory = elm.text.slice(11).trim() == "" ? null : elm.text.slice(11).trim();
+                if(elm.text.startsWith("Примечание:")) out.remark = elm.text.slice(12).trim() == "" ? null : elm.text.slice(12).trim();
+                if(elm.text.startsWith("Процент группы:")) out.percent = elm.text.slice(16).trim() == "" ? null : elm.text.slice(16).trim();
+            });
+            
+        return out;
     }
 }

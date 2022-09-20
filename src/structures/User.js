@@ -1,23 +1,58 @@
 import Users from "../models/Users.js";
-import Parser from "./Parser.js";
+import Group from "./Group.js";
+// eslint-disable-next-line no-unused-vars
+import Main from "./Main.js";
 
 export default class User {
     inst_id = 0;
     kurs = 0;
     group = "";
+    dbResponse = null;
+    count = 0;
 
     /**
-     * Класс, реализующий парсинг расписания
-     * @type {Parser | null}
+     * @type {Group | null}
      */
-    lessons = null;
+    groupClass = null;
 
     /**
      * Класс пользователя
      * @param {String} userID 
+     * @param {Main} main
      */
-    constructor (userID) {
+    constructor (userID, main) {
         this.id = userID;
+        this.main = main;
+    }
+
+    /**
+     * Возвращает строку с парами в указанный день
+     * Без аргументов даёт пары в сегодняшний день
+     * @param {number} day 
+     * @param {boolean} week 
+     * @returns {string | null}
+    */
+    async getSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
+        if(!this.group) return null;
+        if(!this.groupClass.dbResponse || new Date() - this.groupClass.dbResponse.updateDate > 1000 * 60 * 60 * 24) {
+            let r = await this.groupClass.getDbResponse();
+            if (r != 0) return "Произошла ошибка! Повторите попытку позже!";
+        }
+
+        let daySchedule = this.groupClass.dbResponse.data.find(elm => elm.daynum == day && elm.even == week)?.schedule ?? [];
+        let out = "";
+
+        daySchedule.forEach(elm => {
+            out += `\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
+            if(elm.teacher) out += `\n  Преподаватель: ${elm.teacher}`;
+            if(elm.auditory) out += `\n  Аудитория: ${elm.auditory}`;
+            if(elm.percent) out += `\n  Процент группы: ${elm.percent}`;
+            if(elm.remark) out += `\n  Примечание: ${elm.remark}`;
+
+            out += "\n";
+        });
+
+        return `<b>${this.groupClass.parser.dayName(day)} / ${week ? "Чётная" : "Нечётная"} неделя</b>\n` + (!out ? "\nПар нет! Передохни:з" : out);
     }
 
     /**
@@ -30,8 +65,11 @@ export default class User {
             this.inst_id = model.inst_id;
             this.kurs = model.kurs;
             this.group = model.group;
+            
+            if(!this.main.groups.find(elm => elm.name == this.group)) this.main.groups.push(new Group(this.inst_id, this.kurs, this.group));
 
-            this.lessons = new Parser(this.inst_id, this.kurs, this.group);
+            this.groupClass = this.main.groups.find(elm => elm.name == this.group);
+            
         }
     }
 
@@ -48,7 +86,9 @@ export default class User {
      *  Обновление данных на БД
      */
     async updateData() {
-        this.lessons = new Parser(this.inst_id, this.kurs, this.group);
+        if(!this.main.groups.find(elm => elm.name == this.group)) this.main.groups.push(new Group(this.inst_id, this.kurs, this.group));
+
+        this.groupClass = this.main.groups.find(elm => elm.name == this.group);
 
         let model = await Users.findOne({userId: this.id}).exec();
 

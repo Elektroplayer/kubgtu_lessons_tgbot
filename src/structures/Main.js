@@ -3,6 +3,8 @@ import TelegramBot from "node-telegram-bot-api";
 import UserStructure from "./User.js";
 // eslint-disable-next-line no-unused-vars
 import Command from "./Command.js";
+// eslint-disable-next-line no-unused-vars
+import Group from "./Group.js";
 
 export default class Main {
     /**
@@ -21,6 +23,12 @@ export default class Main {
      * @type {UserStructure[]}
      */
     users = [];
+
+    /**
+     * Массив с группами
+     * @type {Group[]}
+     */
+    groups = [];
 
     /**
      * Загружает команды в бота
@@ -57,7 +65,7 @@ export default class Main {
         let user = this.users.find(u => u.id == userId);
 
         if(!user) {
-            user = new UserStructure(userId);
+            user = new UserStructure(userId, this);
             await user.getData();
 
             this.users.push(user);

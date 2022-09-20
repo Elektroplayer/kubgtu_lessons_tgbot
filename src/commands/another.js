@@ -18,7 +18,7 @@ export default class TodayCommand extends Command {
     async exec(bot, user, msg) {
         if(msg.chat.id !== user.id) return;
         
-        if(!user.lessons) return bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
+        if(!user.group) return bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
         
         bot.sendMessage(
             user.id,
@@ -39,13 +39,13 @@ export default class TodayCommand extends Command {
      * @param {TelegramBot.Message} msg 
      */
     async choose(bot, user, msg) {
-        if(!user.lessons) return bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
+        if(!user.group) return bot.sendMessage(user.id, "У меня нет данных о тебе. Напиши /start");
 
         let text;
         let incorrect;
 
-        if(days.includes(msg.text)) text = await user.lessons.getLessons(days.indexOf(msg.text)+1, false);
-        else if(daysEven.includes(msg.text)) text = await user.lessons.getLessons(daysEven.indexOf(msg.text)+1, true);
+        if(days.includes(msg.text)) text = await user.getSchedule(days.indexOf(msg.text)+1, false);
+        else if(daysEven.includes(msg.text)) text = await user.getSchedule(daysEven.indexOf(msg.text)+1, true);
         else {
             text = "Не понял тебя, повтори набор.";
             incorrect = true;
