@@ -31,6 +31,7 @@ export default class TodayCommand extends Command {
                 replytext += "Поддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
     
                 bot.sendMessage(msg.chat.id, replytext, {
+                    disable_web_page_preview: true,
                     reply_markup: {
                         keyboard: mainKeyboard,
                         resize_keyboard: true,
@@ -45,7 +46,9 @@ export default class TodayCommand extends Command {
             } else {
                 replytext += "Можешь воспользоваться командами снизу:\n\n/today - Расписание на сегодня\n/tomorrow - Расписание на завтра\n\nПоддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot";
     
-                bot.sendMessage(msg.chat.id, replytext);
+                bot.sendMessage(msg.chat.id, replytext, {
+                    disable_web_page_preview: true
+                });
             }
         }
     }
