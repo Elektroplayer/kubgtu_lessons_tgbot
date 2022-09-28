@@ -3,7 +3,7 @@ import Command from "../structures/Command.js";
 import TelegramBot from "node-telegram-bot-api";
 // eslint-disable-next-line no-unused-vars
 import User from "../structures/User.js";
-
+import { messages } from "../lib/Utils.js";
 
 export default class TomorrowCommand extends Command {
     name = ["Расписание на завтра", "/tomorrow", "/tomorrow@kubgtu_lessons_bot"];
@@ -33,11 +33,9 @@ export default class TomorrowCommand extends Command {
         );
 
         if(user.count > 20 && user.id == msg.chat.id) {
-            let messages = ["Нравится бот? Поддержи рублём!", "Достаточно одно рубля с 70 человек, чтобы бот продолжил работать ещё месяц!", "Обычно закидывают на чай, но сюда закидывают на шаурму и хост)"];
-
             bot.sendMessage(
                 msg.chat.id,
-                messages[ Math.floor( Math.random() * messages.length ) ] + "\nqiwi.com/n/ELECTRO303",
+                messages[ Math.floor( Math.random() * messages.length ) ],
                 {
                     parse_mode: "HTML",
                     reply_markup: {

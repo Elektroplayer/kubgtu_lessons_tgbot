@@ -47,6 +47,7 @@ export default class User {
             if(elm.teacher) out += `\n  Преподаватель: ${elm.teacher}`;
             if(elm.auditory) out += `\n  Аудитория: ${elm.auditory}`;
             if(elm.percent) out += `\n  Процент группы: ${elm.percent}`;
+            if(elm.flow) out += "\n  В лекционном потоке";
             if(elm.remark) out += `\n  Примечание: ${elm.remark}`;
 
             out += "\n";

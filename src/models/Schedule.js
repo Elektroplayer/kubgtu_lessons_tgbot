@@ -16,7 +16,8 @@ const schema = new mongoose.Schema({
                     teacher: String,
                     auditory: String,
                     remark: String,
-                    percent: String
+                    percent: String,
+                    flow: Boolean
                 }
             ]
         }

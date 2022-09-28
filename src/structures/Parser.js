@@ -67,6 +67,7 @@ export default class Parser {
     getLessonRaw(week, day, num) {
         if(!this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)) return null;
 
+        // Дефолтный объект
         let out = {
             number: null,
             time: null,
@@ -75,22 +76,38 @@ export default class Parser {
             teacher: null,
             auditory: null,
             remark: null,
-            percent: null
+            percent: null,
+            flow: false
         };
 
+        // Расписание разделено на голову и раскрывающуюся часть
+        // Тут анализируем голову, из которой вынимаем:
         let firstTextArray = this.root.querySelector(`#heading_n_${week}_d_${day}_i_${num}`).text
             .trim()
             .split("/")
             .map(elm => {return elm.trim();});
-        
+
+        // Номер пары
         out.number = firstTextArray[0].slice(0,1);
 
+        // Время проведения
         out.time = firstTextArray[0].match(/\(.+\)/g)[0];
         out.time = out.time.substring(1,out.time.length-1);
 
+        // Название пары
         out.name = firstTextArray[1];
-        out.paraType = firstTextArray[2];
 
+        // Тип пары
+        // (Немного изменю название занятий, тк будет короче и банально удобнее)
+        let types = {
+            "Лекции": "Лекция",
+            "Практические занятия": "Практика",
+            "Лабораторные занятия": "Лабораторная"
+        };
+
+        out.paraType = types[firstTextArray[2]] ?? firstTextArray[2];
+
+        // С раскрывающейся частью проще
         this.root.querySelector(`#collapse_n_${week}_d_${day}_i_${num}`)
             .querySelector(".panel-body")
             .childNodes
@@ -100,6 +117,7 @@ export default class Parser {
                 if(elm.text.startsWith("Аудитория:")) out.auditory = elm.text.slice(11).trim() == "" ? null : elm.text.slice(11).trim();
                 if(elm.text.startsWith("Примечание:")) out.remark = elm.text.slice(12).trim() == "" ? null : elm.text.slice(12).trim();
                 if(elm.text.startsWith("Процент группы:")) out.percent = elm.text.slice(16).trim() == "" ? null : elm.text.slice(16).trim();
+                if(elm.text.startsWith("В лекционном потоке: Да")) out.flow = true;
             });
             
         return out;
