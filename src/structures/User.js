@@ -65,8 +65,11 @@ export default class User {
         
         let dayEvents = await Event.find({date});
         let out = "";
+        let filter = (elm) => (!elm.groups || elm.groups?.includes(this.group)) && 
+            (!elm.kurses || elm.kurses?.includes(this.kurs)) &&
+            (!elm.inst_ids || elm.inst_ids?.includes(this.inst_ids));
 
-        dayEvents.filter(elm => elm.groups.length == 0 || elm.groups.includes(this.group))
+        dayEvents.filter(filter)
             .forEach((elm, i) => {
                 out += `\n\n${i+1}. <b>${elm.name}</b> <i>(${elm.evTime})</i>`;
                 if(elm.note) out += `\n  ${elm.note}`;

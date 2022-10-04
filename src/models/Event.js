@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
     groups: [String],
+    kurses: [String],
+    inst_ids: [String],
     name: String,
     date: Date,
     evTime: String,
