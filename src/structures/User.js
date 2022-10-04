@@ -1,3 +1,4 @@
+import Event from "../models/Event.js";
 import Users from "../models/Users.js";
 import Group from "./Group.js";
 // eslint-disable-next-line no-unused-vars
@@ -34,26 +35,45 @@ export default class User {
     */
     async getSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
         if(!this.group) return null;
-        if(!this.groupClass.dbResponse || new Date() - this.groupClass.dbResponse.updateDate > 1000 * 60 * 60 * 24) {
+        if(!this.groupClass.dbResponse || new Date() - this.groupClass.dbResponse?.updateDate > 1000 * 60 * 60 * 24) {
             let r = await this.groupClass.getDbResponse();
             if (r != 0) return "Произошла ошибка! Повторите попытку позже!";
         }
 
-        let daySchedule = this.groupClass.dbResponse.data.find(elm => elm.daynum == day && elm.even == week)?.schedule ?? [];
+        let daySchedule = this.groupClass.dbResponse.days.find(elm => elm.daynum == day && elm.even == week)?.schedule ?? [];
         let out = "";
 
         daySchedule.forEach(elm => {
-            out += `\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
+            out += `\n\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
             if(elm.teacher) out += `\n  Преподаватель: ${elm.teacher}`;
             if(elm.auditory) out += `\n  Аудитория: ${elm.auditory}`;
             if(elm.percent) out += `\n  Процент группы: ${elm.percent}`;
             if(elm.flow) out += "\n  В лекционном потоке";
             if(elm.remark) out += `\n  Примечание: ${elm.remark}`;
-
-            out += "\n";
         });
 
-        return `<b>${this.groupClass.parser.dayName(day)} / ${week ? "Чётная" : "Нечётная"} неделя</b>\n` + (!out ? "\nПар нет! Передохни:з" : out);
+        return `<b>${this.groupClass.parser.dayName(day)} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);
+    }
+
+    async getEvents(day = new Date().getDay()) {
+        if(!this.group) return null;
+
+        let date = new Date();
+        date.setUTCHours(0,0,0,0);
+
+        if(date.getDay() != day) date.setUTCDate(date.getDate()+1); // +1 потому что, что это используется только в расписании на сегодня или завтра        
+        
+        let dayEvents = await Event.find({date});
+        let out = "";
+
+        dayEvents.filter(elm => elm.groups.length == 0 || elm.groups.includes(this.group))
+            .forEach((elm, i) => {
+                out += `\n\n${i+1}. <b>${elm.name}</b> <i>(${elm.evTime})</i>`;
+                if(elm.note) out += `\n  ${elm.note}`;
+            });
+
+        return out ? ("<b>СОБЫТИЯ:</b>" + out) : null;
+
     }
 
     /**

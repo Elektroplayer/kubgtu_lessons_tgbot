@@ -8,7 +8,7 @@ import User from "../structures/User.js";
 
 
 export default class TodayCommand extends Command {
-    name = "Выбрать другой день";
+    name = ["Выбрать другой день"];
 
     /**
      * @param {TelegramBot} bot 

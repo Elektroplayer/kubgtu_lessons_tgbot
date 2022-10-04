@@ -16,7 +16,14 @@ export default class TodayCommand extends Command {
     async exec(bot, user, msg) {
         if(!user.group) return bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
 
-        let text = await user.getSchedule();
+        let text;
+        let schedule = await user.getSchedule();
+        let events = await user.getEvents();
+
+        if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
+        else text = schedule;
+
+        if(events) text += `\n\n${events}`;
         
         bot.sendMessage(
             msg.chat.id,

@@ -10,13 +10,13 @@ export default class Group {
         this.parser = new Parser(instId, kurs, name);
     }
 
-    async getDbResponse() {
+    async getDbResponse(forseFromSite = false) {
         this.dbResponse = await Schedule.findOne({group: this.name}).exec();
 
         if(!this.dbResponse) {
-            let data;
+            let days;
             try {
-                data = await this.parser.parseSchedule();
+                days = await this.parser.parseSchedule();
             } catch (err) {
                 console.log(err);
                 return 1;
@@ -25,28 +25,26 @@ export default class Group {
             let scheme = {
                 group: this.name,
                 updateDate: new Date(),
-                data
+                days
             };
 
-            let dbResp = new Schedule(scheme);
+            this.dbResponse = new Schedule(scheme);
 
-            dbResp.save().catch(err => {console.log(err);});
-
-            this.dbResponse = dbResp;
+            this.dbResponse.save().catch(err => {console.log(err);});
         }
 
-        if(new Date() - this.dbResponse.updateDate > 1000 * 60 * 60 * 24) {
+        if(new Date() - this.dbResponse.updateDate > 1000 * 60 * 60 * 24 || forseFromSite) {
             // this.dbResponse = await Schedule.findOne({group: this.group}).exec(); // Он может обычным объектом
 
-            let data;
+            let days;
             try {
-                data = await this.parser.parseSchedule();
+                days = await this.parser.parseSchedule();
             } catch (err) {
                 console.log(err);
                 return 0;
             }
 
-            this.dbResponse.data = data;
+            this.dbResponse.days = days;
             this.dbResponse.updateDate = new Date();
 
             this.dbResponse.save().catch(err => {console.log(err);});

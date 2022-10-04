@@ -18,11 +18,12 @@ export default class CommandActivatorEvent extends Event {
             return command.choose(this.main.bot, user, msg);
         }
 
-        let command = this.main.commands.find(elm => elm.name == msg.text || elm.name.includes(msg.text));
+        let command = this.main.commands.find(elm => elm.name?.some(text => msg.text?.startsWith(text)));
         if(command) {
             console.log( user.group, msg.from.username, msg.text );
 
-            command.exec(this.main.bot, user, msg);
+            if(command.name[0] == "/adm") command.exec(this.main.bot, user, msg, this.main);
+            else command.exec(this.main.bot, user, msg);
         }
         else if(msg.from.id == msg.chat.id) this.main.bot.sendMessage(msg.chat.id, "Не понял тебя, повтори набор.", {
             reply_markup: {

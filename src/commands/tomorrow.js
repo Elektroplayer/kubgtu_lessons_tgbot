@@ -19,7 +19,14 @@ export default class TomorrowCommand extends Command {
         let now = new Date();
         let date = new Date( now.getFullYear(), now.getMonth(), now.getDate()+1 );
 
-        let text = await user.getSchedule(date.getDay(), date.getWeek()%2 == 0);
+        let text;
+        let schedule = await user.getSchedule(date.getDay(), date.getWeek()%2 == 0);
+        let events = await user.getEvents(date.getDay());
+
+        if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
+        else text = schedule;
+
+        if(events) text += `\n\n${events}`;
         
         bot.sendMessage(
             msg.chat.id,
