@@ -9,7 +9,7 @@ export default class User {
     kurs = 0;
     group = "";
     dbResponse = null;
-    count = 20;
+    count = 6;
 
     /**
      * @type {Group | null}

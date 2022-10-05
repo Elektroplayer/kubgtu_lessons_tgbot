@@ -36,7 +36,9 @@ export default class TodayCommand extends Command {
             }
         );
 
-        if(user.count > 20 && user.id == msg.chat.id) {
+        if(user.count > 7 && user.id == msg.chat.id) {
+            console.log(" + донатное сообщение.");
+
             bot.sendMessage(
                 msg.chat.id,
                 messages[ Math.floor( Math.random() * messages.length ) ],
