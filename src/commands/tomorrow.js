@@ -16,12 +16,12 @@ export default class TomorrowCommand extends Command {
     async exec(bot, user, msg) {
         if(!user.group) return bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
 
-        let now = new Date();
-        let date = new Date( now.getFullYear(), now.getMonth(), now.getDate()+1 );
+        let date = new Date();
+        date.setUTCDate(date.getUTCDate() + 1);
 
         let text;
         let schedule = await user.getSchedule(date.getDay(), date.getWeek()%2 == 0);
-        let events = await user.getEvents(date.getDay());
+        let events = await user.getEvents(date);
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
         else text = schedule;

@@ -55,14 +55,11 @@ export default class User {
         return `<b>${this.groupClass.parser.dayName(day)} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);
     }
 
-    async getEvents(day = new Date().getDay()) {
+    async getEvents(date = new Date()) {
         if(!this.group) return null;
-
-        let date = new Date();
+        
         date.setUTCHours(0,0,0,0);
 
-        if(date.getDay() != day) date.setUTCDate(date.getDate()+1); // +1 потому что, что это используется только в расписании на сегодня или завтра        
-        
         let dayEvents = await Event.find({date});
         let out = "";
         let filter = (elm) => (!elm.groups.length || elm.groups?.includes(this.group)) && 
