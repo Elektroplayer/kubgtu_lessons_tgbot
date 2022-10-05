@@ -20,7 +20,7 @@ export default class CommandActivatorEvent extends Event {
 
         let command = this.main.commands.find(elm => elm.name?.some(text => msg.text?.startsWith(text)));
         if(command) {
-            console.log( user.group, msg.from.username, msg.text );
+            console.log( `${msg.from.username ?? msg.from.first_name ?? "Нет ника (?)"}: ${user.group ?? "Не выбрана"}; ${msg.text};` );
 
             if(command.name[0] == "/adm") command.exec(this.main.bot, user, msg, this.main);
             else command.exec(this.main.bot, user, msg);
