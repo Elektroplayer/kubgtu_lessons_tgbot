@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         {
             daynum: Number,
             even: Boolean,
-            schedule: [
+            daySchedule: [
                 {
                     number: Number,
                     time: String,
