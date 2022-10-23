@@ -5,24 +5,24 @@ import Query from "./Query.js";
 export default abstract class Scene {
     abstract name: string;
     commands: Command[];
-    queryes: Query[]
+    queries: Query[]
 
     constructor() {
         this.commands = [];
-        this.queryes = [];
+        this.queries = [];
 
         this.importCommands();
-        this.importQueryes();
+        this.importQueries();
     }
 
-    async importQueryes() {
-        for (let dirent of readdirSync("./dist/scenes/queryes/", {withFileTypes: true})) {
+    async importQueries() {
+        for (let dirent of readdirSync("./dist/scenes/queries/", {withFileTypes: true})) {
             if (!dirent.name.endsWith(".js")) continue;
         
-            let queryClass = (await import("../scenes/queryes/" + dirent.name)).default;
+            let queryClass = (await import("../scenes/queries/" + dirent.name)).default;
             let query:Query = new queryClass();
 
-            if(query.sceneName == this.name) this.queryes.push(query);
+            if(query.sceneName == this.name) this.queries.push(query);
         }
     }
 

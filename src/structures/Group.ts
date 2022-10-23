@@ -23,7 +23,7 @@ export default class Group {
             if(r == null) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает..."
         }
 
-        let daySchedule = this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule!;
+        let daySchedule = this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
 
         daySchedule.forEach(elm => {
             out += `\n\n${elm.number} пара: ${elm.name} [${elm.paraType}]\n  Время: ${elm.time}`;
@@ -57,7 +57,7 @@ export default class Group {
         let dbResponse = await Schedules.findOne({group: this.name}).exec()
 
         if(dbResponse) {
-            if(new Date().valueOf() - dbResponse?.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
+            if(new Date().valueOf() - dbResponse?.updateDate?.valueOf()! < 1000 * 60 * 60 * 24) return this.setSchedule(dbResponse.days as Day[], dbResponse.updateDate!)
             else {
                 try {
                     let days = await this.parser.parseSchedule();

@@ -1,22 +1,10 @@
 import Scene from "./Scene.js";
 import Group from "./Group.js";
 import Users from "../models/Users.js";
-import Main from "./Main.js";
+import Cache from "../lib/Cache.js";
 
 export default class User {
-    /**
-     * ID человека
-     */
-    id: number;
-
-    /**
-     * Сцена с командами
-     */
     scene?: Scene;
-
-    /**
-     * Группа человека
-     */
     group?: Group;
 
     /**
@@ -28,15 +16,7 @@ export default class User {
         kurs?: number
     }[] = []
 
-    main: Main;
-
-    /**
-     * Класс человека в котором содержится класс группы
-     */
-    constructor(userId:string | number, main: Main) {
-        this.id = +userId;
-        this.main = main;
-    }
+    constructor(public id:number) {}
 
     /**
      * Инициализация группы
@@ -77,12 +57,12 @@ export default class User {
      * Устновка текущей группы у человека
      */
     setGroup(group:string, kurs: number | string, inst_id:number | string) {
-        let groupClass = this.main.groups.find(g => g.name == group)
+        let groupClass = Cache.groups.find(g => g.name == group)
 
         if(!groupClass) {
             let newGroup = new Group(group, +kurs, +inst_id);
 
-            this.main.groups.push(newGroup);
+            Cache.groups.push(newGroup);
 
             this.group = newGroup;
         } else this.group = groupClass;

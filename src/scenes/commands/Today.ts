@@ -1,15 +1,15 @@
 import { Message } from "node-telegram-bot-api";
 import Command from "../../structures/Command.js";
-import Main from "../../structures/Main.js";
 import User from "../../structures/User.js";
+import Cache from "../../lib/Cache.js";
 
 export default class TodayCommand extends Command {
     name = ["Расписание на сегодня", "/today", "/today@kubgtu_lessons_bot"];
     sceneName = ["main"];
 
-    async exec(main: Main, user: User, msg: Message): Promise<void> {
+    async exec(user: User, msg: Message): Promise<void> {
         if(!user.group) {
-            main.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
+            Cache.bot.sendMessage(msg.chat.id, "У меня нет данных о тебе. Напиши /start" + ( msg.chat.id !== user.id ? " мне личные сообщения." : "."));
             return;
         }
 
@@ -22,7 +22,7 @@ export default class TodayCommand extends Command {
 
         if(events) text += `\n\n${events}`;
         
-        main.bot.sendMessage(
+        Cache.bot.sendMessage(
             msg.chat.id,
             text,
             {

@@ -1,23 +1,23 @@
 import TelegramBot from "node-telegram-bot-api";
 import Event from "../structures/Event.js"
-import Main from "../structures/Main.js";
+import Cache from "../lib/Cache.js";
 
 export default class MessageEvent extends Event {
     name = "message" as BotEvents;
 
-    async exec(main:Main, msg:TelegramBot.Message): Promise<void> {
+    async exec(msg:TelegramBot.Message): Promise<void> {
         if(!msg.from || !msg.text) return;
 
-        let user = await main.getUser(msg.from.id);
+        let user = await Cache.getUser(msg.from.id);
 
-        if(!user.scene) user.scene = main.scenes.find(s => s.name == "main")
+        if(!user.scene) user.scene = Cache.scenes.find(s => s.name == "main")
 
         let command = user.scene!.commands.find(c => c.name.includes(msg.text!))
 
         if(!command) {
-            if(msg.chat.type !== 'group') main.bot.sendMessage(msg.chat.id, "А нафиг сходить?");
+            if(msg.chat.type !== 'group') Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда");
         }
-        else command.exec(main, user, msg);
+        else command.exec(user, msg);
     }
 }
 

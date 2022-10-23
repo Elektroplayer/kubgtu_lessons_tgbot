@@ -1,16 +1,16 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import Main from "../../structures/Main.js";
 import Query from "../../structures/Query.js";
 import User from "../../structures/User.js";
 import https from "https";
 import fetch from "node-fetch";
+import Cache from "../../lib/Cache.js";
 
 interface KeyboardButton {
     text: string,
     callback_data: string
 }
 
-export default class KursQuery extends Query {
+export default class GroupQuery extends Query {
     name = ["settings_kurs"];
     sceneName = "register";
 
@@ -43,13 +43,13 @@ export default class KursQuery extends Query {
         return matches;
     }
 
-    async exec(main: Main, user: User, query: CallbackQuery): Promise<void> {
+    async exec(user: User, query: CallbackQuery): Promise<void> {
         if(!query?.message?.text) return; // не знаю как, но на всякий случай
 
         let db = user.dataBuffer.find(db => db.id == query.message?.message_id)
 
         if(!db) {
-            main.bot.sendMessage(query.message!.chat.id, "Похоже эта кнопка себя исчерпала");
+            Cache.bot.sendMessage(query.message!.chat.id, "Похоже эта кнопка себя исчерпала");
             return;
         }
     
@@ -61,7 +61,7 @@ export default class KursQuery extends Query {
         let buffer: KeyboardButton[] = [];
 
         if(!groups) {
-            main.bot.editMessageText(
+            Cache.bot.editMessageText(
                 text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + "\n\nЧто-то пошло не так! Повторите попытку позже...",
                 {
                     chat_id: query.message.chat.id,
@@ -85,7 +85,7 @@ export default class KursQuery extends Query {
 
         keyboard.push(buffer);
 
-        main.bot.editMessageText(
+        Cache.bot.editMessageText(
             text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + `\n\nВыбери свою группу. ${(new Date().getUTCFullYear()-db.kurs+1).toString().substring(2)}-...`,
             {
                 chat_id: query.message.chat.id,
