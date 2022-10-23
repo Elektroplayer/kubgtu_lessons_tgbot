@@ -15,8 +15,11 @@ export default class Group {
         this.parser  = new Parser(instId, kurs, name);
     }
 
-    async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
-        let out = "";
+    async getTextSchedule(date = new Date()) {
+
+        let day   = date.getDay()
+        let week  = date.getWeek()%2==0
+        let out   = "";
 
         if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
             let r = await this.updateSchedule();
