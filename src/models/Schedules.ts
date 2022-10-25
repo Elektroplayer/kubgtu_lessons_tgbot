@@ -7,25 +7,21 @@ const schema = new mongoose.Schema({
         default: undefined
     },
     updateDate: Date,
-    days: [
-        {
-            daynum: Number,
-            even: Boolean,
-            daySchedule: [
-                {
-                    number: Number,
-                    time: String,
-                    name: String,
-                    paraType: String,
-                    teacher: String,
-                    auditory: String,
-                    remark: String,
-                    percent: String,
-                    flow: Boolean
-                }
-            ]
-        }
-    ]
+    days: [{
+        daynum: Number,
+        even: Boolean,
+        daySchedule: [{
+            number: Number,
+            time: String,
+            name: String,
+            paraType: String,
+            teacher: String,
+            auditory: String,
+            remark: String,
+            percent: String,
+            flow: Boolean
+        }]
+    }]
 }, { collection: "schedule" });
 
 export default mongoose.model("schedule", schema);

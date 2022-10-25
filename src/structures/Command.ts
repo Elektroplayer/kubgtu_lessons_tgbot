@@ -5,5 +5,5 @@ export default abstract class Command {
     abstract name: string[];
     abstract sceneName: string[];
 
-    abstract exec(user: User, msg: Message): void;
+    abstract exec(user: User, msg: Message): Promise<void>;
 }

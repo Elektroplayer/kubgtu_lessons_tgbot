@@ -15,10 +15,7 @@ export default class Group {
         this.parser  = new Parser(instId, kurs, name);
     }
 
-    async getTextSchedule(date = new Date()) {
-
-        let day   = date.getDay()
-        let week  = date.getWeek()%2==0
+    async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
         let out   = "";
 
         if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
@@ -95,11 +92,20 @@ export default class Group {
         try {
             let days = await this.parser.parseSchedule()
 
-            new Schedules({ // FIXME: При наличии записи в БД он должен обновлять её, а не создавать новую.
-                group: this.name,
-                days,
-                updateDate: new Date()
-            }).save().catch(console.log);
+            let dbResponse = await Schedules.findOne({group: this.name}).exec()
+
+            if(dbResponse) {
+                dbResponse.days = days;
+                dbResponse.updateDate = new Date();
+
+                dbResponse.save().catch(console.log)
+            } else {
+                new Schedules({
+                    group: this.name,
+                    days,
+                    updateDate: new Date()
+                }).save().catch(console.log);
+            }
 
             return this.setSchedule(days);
         } catch (error) {

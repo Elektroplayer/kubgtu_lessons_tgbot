@@ -7,23 +7,23 @@ import { config } from "dotenv";
 config(); // Инициализируем переменные среды снова
 
 class Cache {
-    bot:TelegramBot = new TelegramBot(process.env.TOKEN, {polling: true});
-    users:User[] = [];
-    groups:Group[] = [];
-    scenes:Scene[] = [];
+    bot: TelegramBot = new TelegramBot(process.env.TOKEN, { polling: true });
+    users: User[] = [];
+    groups: Group[] = [];
+    scenes: Scene[] = [];
 
     async getUser(userId: number) {
-        let user = this.users.find(u => u.id == userId)
+        let user = this.users.find((u) => u.id == userId);
 
-        if(user) return user
+        if (user) return user;
         else {
             let newUser = new User(userId);
 
-            await newUser.initGroup()
+            await newUser.initGroup();
 
             this.users.push(newUser);
 
-            return newUser
+            return newUser;
         }
     }
 }

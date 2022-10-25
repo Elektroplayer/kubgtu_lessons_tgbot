@@ -28,7 +28,7 @@ export default class TodayCommand extends Command {
             {
                 parse_mode: "HTML",
                 reply_markup: {
-                    remove_keyboard: user.id !== msg.chat.id
+                    remove_keyboard: msg.chat.type == "group"
                 }
             }
         );

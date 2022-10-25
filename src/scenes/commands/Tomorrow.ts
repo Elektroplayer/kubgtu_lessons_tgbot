@@ -3,7 +3,7 @@ import Command from "../../structures/Command.js";
 import User from "../../structures/User.js";
 import Cache from "../../lib/Cache.js";
 
-export default class TodayCommand extends Command {
+export default class TomorrowCommand extends Command {
     name = ["Расписание на завтра", "/tomorrow", "/tomorrow@kubgtu_lessons_bot"];
     sceneName = ["main"];
 
@@ -17,7 +17,7 @@ export default class TodayCommand extends Command {
         date.setUTCDate(date.getUTCDate() + 1);
 
         let text;
-        let schedule = await user.group.getTextSchedule(date);
+        let schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0);
         let events = null;
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
@@ -31,7 +31,7 @@ export default class TodayCommand extends Command {
             {
                 parse_mode: "HTML",
                 reply_markup: {
-                    remove_keyboard: user.id !== msg.chat.id
+                    remove_keyboard: msg.chat.type == "group"
                 }
             }
         );
