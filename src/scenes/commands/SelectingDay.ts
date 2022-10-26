@@ -4,7 +4,7 @@ import User from "../../structures/User.js";
 import Cache from "../../lib/Cache.js";
 import { mainKeyboard } from "../../lib/Keyboards.js";
 
-export default class AnotherDayCommand extends Command {
+export default class SelectingDayCommand extends Command {
     name = [
         "Нечёт Пн",
         "Нечёт Вт",
