@@ -6,7 +6,7 @@ import Cache from "../../lib/Cache.js";
 
 export default class KursQuery extends Query {
     name = ["settings_inst"];
-    sceneName = "register";
+    sceneName = "settings";
 
     async exec(user: User, query: CallbackQuery): Promise<void> {
         if(!query?.message?.text) return

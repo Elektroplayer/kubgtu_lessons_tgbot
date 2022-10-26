@@ -6,7 +6,7 @@ import Cache from "../../lib/Cache.js";
 
 export default class FinalQuery extends Query {
     name = ["settings_group"];
-    sceneName = "register";
+    sceneName = "settings";
 
     async exec(user: User, query: CallbackQuery): Promise<void> {
         if(!query?.message?.text) return; // не знаю как, но на всякий случай
@@ -29,7 +29,7 @@ export default class FinalQuery extends Query {
         user.dataBuffer = user.dataBuffer.slice(user.dataBuffer.indexOf(db), 1);
         
         Cache.bot.editMessageText(
-            "Вся нужная информация была введена, теперь ты можешь смотреть расписание",
+            "Вся нужная информация была введена, теперь ты можешь смотреть расписание. Если понадобиться перенастроить бота, введи команду /settings.",
             {
                 chat_id: query.message.chat.id,
                 message_id: query.message.message_id,

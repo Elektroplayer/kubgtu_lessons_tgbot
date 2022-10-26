@@ -12,7 +12,7 @@ interface KeyboardButton {
 
 export default class GroupQuery extends Query {
     name = ["settings_kurs"];
-    sceneName = "register";
+    sceneName = "settings";
 
     /**
      * Парсит группы с сайта для данного института и курса и возвращает массив с ними

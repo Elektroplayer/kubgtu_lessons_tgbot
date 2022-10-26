@@ -18,7 +18,7 @@ export default class TodayCommand extends Command {
             Cache.bot.sendMessage(msg.chat.id, replytext);
         } else {
             if(!user.group) {
-                user.scene = Cache.scenes.find(s => s.name == "register")
+                user.scene = Cache.scenes.find(s => s.name == "settings")
 
                 replytext += "У тебя не установлена некоторая важная для меня информация. Подскажи пожалуйста,\n\nКакой у тебя институт. Если твоего тут нет, значит он может появиться в будущем";
 
