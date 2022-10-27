@@ -1,8 +1,8 @@
 import { CallbackQuery } from "node-telegram-bot-api";
-import { mainKeyboard } from "../../lib/Keyboards.js";
-import Query from "../../structures/Query.js";
-import User from "../../structures/User.js";
-import Cache from "../../lib/Cache.js";
+import { mainKeyboard } from "../lib/Keyboards.js";
+import Query from "../structures/Query.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
 
 export default class FinalQuery extends Query {
     name = ["settings_group"];

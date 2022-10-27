@@ -4,6 +4,8 @@ import Scene from "./Scene.js";
 import Cache from "../lib/Cache.js";
 
 export default class Main {
+    scenesNames = ["main", "settings"];
+
     run() {
         this.initEvents();
         this.initTimers();
@@ -24,15 +26,11 @@ export default class Main {
     }
 
     async initScenes() {
-        for (let dirent of readdirSync("./dist/scenes", {withFileTypes: true})) {
-            if (!dirent.name.endsWith(".js")) continue;
+        this.scenesNames.forEach(sceneName => {
+            console.log(`Сцена ${sceneName}`);
 
-            console.log(`Сцена ${dirent.name}`);
-        
-            let sceneClass = (await import("../scenes/" + dirent.name)).default;
-            let scene:Scene = new sceneClass();
-            Cache.scenes.push(scene);
-        }
+            Cache.scenes.push(new Scene(sceneName));
+        })
     }
 
     initTimers() {

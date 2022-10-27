@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import Command from "../../structures/Command.js";
-import User from "../../structures/User.js";
-import Cache from "../../lib/Cache.js";
-import { instKeyboard } from "../../lib/Keyboards.js";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
+import { instKeyboard } from "../lib/Keyboards.js";
 
 export default class TodayCommand extends Command {
     name = ["/settings", "/settings@kubgtu_lessons_bot"];
@@ -22,7 +22,7 @@ export default class TodayCommand extends Command {
         Cache.bot.sendMessage(msg.chat.id, replytext, {
             disable_web_page_preview: true,
             reply_markup: {
-                keyboard: instKeyboard,
+                inline_keyboard: instKeyboard,
                 resize_keyboard: true,
             }
         });

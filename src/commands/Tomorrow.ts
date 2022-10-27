@@ -1,10 +1,10 @@
 import { Message } from "node-telegram-bot-api";
-import Command from "../../structures/Command.js";
-import User from "../../structures/User.js";
-import Cache from "../../lib/Cache.js";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
 
-export default class TodayCommand extends Command {
-    name = ["Расписание на сегодня", "/today", "/today@kubgtu_lessons_bot"];
+export default class TomorrowCommand extends Command {
+    name = ["Расписание на завтра", "/tomorrow", "/tomorrow@kubgtu_lessons_bot"];
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {
@@ -13,9 +13,12 @@ export default class TodayCommand extends Command {
             return;
         }
 
+        let date = new Date();
+        date.setUTCDate(date.getUTCDate() + 1);
+
         let text;
-        let schedule = await user.group.getTextSchedule();
-        let events = null;
+        let schedule = await user.group.getTextSchedule(date.getDay(), date.getWeek()%2==0);
+        let events = await user.group.getTextEvents(date);
 
         if(!schedule) text = "<b>Расписание не найдено...</b> <i>или что-то пошло не так...</i>";
         else text = schedule;

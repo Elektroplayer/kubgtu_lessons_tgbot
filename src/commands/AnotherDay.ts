@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import Command from "../../structures/Command.js";
-import User from "../../structures/User.js";
-import Cache from "../../lib/Cache.js";
-import { anotherDay } from "../../lib/Keyboards.js";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
+import { anotherDay } from "../lib/Keyboards.js";
 
 export default class AnotherDayCommand extends Command {
     name = ["Выбрать другой день"];

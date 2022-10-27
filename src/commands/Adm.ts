@@ -1,8 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import { instKeyboard, mainKeyboard } from "../../lib/Keyboards.js";
-import Command from "../../structures/Command.js";
-import User from "../../structures/User.js";
-import Cache from "../../lib/Cache.js";
+import { instKeyboard, mainKeyboard } from "../lib/Keyboards.js";
+import Command from "../structures/Command.js";
+import User from "../structures/User.js";
+import Cache from "../lib/Cache.js";
 
 export default class AdminCommand extends Command {
     name = ["/adm"];

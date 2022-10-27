@@ -1,5 +1,6 @@
 import Parser from "./Parser.js";
 import Schedules from "../models/Schedules.js";
+import Events from "../models/Events.js";
 
 export default class Group {
     name: string;
@@ -35,6 +36,25 @@ export default class Group {
         });
 
         return `<b>${this.parser.days[day]} / ${week ? "Чётная" : "Нечётная"} неделя</b>` + (!out ? "\nПар нет! Передохни:з" : out);
+    }
+
+    async getTextEvents(date = new Date()): Promise<string | null> {
+        date.setUTCHours(0,0,0,0);
+
+        let dayEvents = await Events.find({date});
+        let out = "";
+
+        dayEvents.filter( 
+            (elm) => (!elm.groups.length || elm.groups?.includes(this.name)) && 
+            (!elm.kurses.length || elm.kurses?.includes(this.kurs)) &&
+            (!elm.inst_ids.length || elm.inst_ids?.includes(this.instId))
+        )
+            .forEach((elm, i) => {
+                out += `\n\n${i+1}. <b>${elm.name}</b> <i>(${elm.evTime})</i>`;
+                if(elm.note) out += `\n  ${elm.note}`;
+            });
+
+        return out ? ("<b>СОБЫТИЯ:</b>" + out) : null;
     }
 
     /**
