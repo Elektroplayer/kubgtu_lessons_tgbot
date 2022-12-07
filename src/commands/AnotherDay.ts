@@ -5,7 +5,7 @@ import Cache from "../lib/Cache.js";
 import { anotherDay } from "../lib/Keyboards.js";
 
 export default class AnotherDayCommand extends Command {
-    name = ["Выбрать другой день"];
+    name = ["🔀 Выбрать день"];
     sceneName = ["main"];
 
     async exec(user: User, msg: Message): Promise<void> {

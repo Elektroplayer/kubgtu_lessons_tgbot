@@ -1,3 +1,4 @@
+import { KeyboardButton } from "node-telegram-bot-api";
 import { days, daysEven } from "./Utils.js";
 
 export let instKeyboard = [
@@ -59,13 +60,19 @@ export const kursKeyboard = [
 export const mainKeyboard = [
     [
         {
-            text: "Расписание на сегодня",
+            text: "⏺️ Сегодняшнее",
         },{
-            text: "Расписание на завтра",
-        },
+            text: "▶️ Завтрашнее",
+        }
     ],[
         {
-            text: "Выбрать другой день",
+            text: "⏩ Ближайшее"
+        }, {
+            text: "🔀 Выбрать день",
+        }
+    ],[
+        {
+            text: "⚙️ Настройки",
         },
     ],
 ];
@@ -78,6 +85,34 @@ export const anotherDay = [
         return { text: elm };
     }),
 ];
+
+// export const anotherDay = [
+//     days.slice().map((elm, i) => {
+//         return { text: elm, callback_data: `anotherDay_n${i}` };
+//     }),
+//     daysEven.slice().map((elm, i) => {
+//         return { text: elm, callback_data: `anotherDay_e${i}` };
+//     }),
+// ];
+
+export function settingsKeyboard(notifications: boolean):KeyboardButton[][] {
+
+    return [
+        [
+            {
+                text: notifications ? "🔕 Выключить уведомления" : "🔔 Включить уведомления"
+            }
+        ],[
+            {
+                text: "⚙️ Перенастроить бота"
+            }
+        ],[
+            {
+                text: "🛑 Отмена"
+            }
+        ]
+    ]
+}
 
 export default {
     instKeyboard,
