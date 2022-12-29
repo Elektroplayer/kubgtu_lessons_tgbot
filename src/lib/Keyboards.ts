@@ -100,7 +100,7 @@ export function settingsKeyboard(notifications: boolean):KeyboardButton[][] {
     return [
         [
             {
-                text: notifications ? "🔕 Выключить уведомления" : "🔔 Включить уведомления"
+                text: notifications ? "🔕 Выключить напоминания" : "🔔 Включить напоминания"
             }
         ],[
             {

@@ -43,7 +43,8 @@ export default class Main {
             let timerClass = (await import("../timers/" + dirent.name)).default;
             let timer:Timer = new timerClass();
 
-            setInterval(timer.exec, timer.time);
+            timer.init();
+            // setInterval(timer.exec, timer.time);
         }
     }
 }

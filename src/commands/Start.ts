@@ -33,6 +33,8 @@ export default class TodayCommand extends Command {
             } else {
                 replytext += "Поддержка: @Elektroplayer_xXx\nДонат: qiwi.com/n/ELECTRO303\nGitHub: github.com/Elektroplayer/kubgtu_lessons_tgbot\n\nМожешь выбрать действие снизу.";
 
+                user.scene = Cache.scenes.find(s => s.name == "main");
+
                 Cache.bot.sendMessage(msg.chat.id, replytext, {
                     disable_web_page_preview: true,
                     reply_markup: {

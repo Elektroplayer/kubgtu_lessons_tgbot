@@ -4,4 +4,5 @@ export default abstract class Timer {
      */
     abstract time: number;
     abstract exec(): void;
+    abstract init(): void;
 }

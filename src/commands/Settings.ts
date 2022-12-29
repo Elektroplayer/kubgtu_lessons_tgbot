@@ -16,26 +16,23 @@ export default class TodayCommand extends Command {
             return;
         }
 
-        user.scene = Cache.scenes.find(s => s.name == "settings");
-
         let userData = await Users.findOne({userId: user.id}).exec()
+
+        if (!userData) {
+            Cache.bot.sendMessage(msg.chat.id, "Сначала настрой бота");
+
+            return;
+        }
+
+        user.scene = Cache.scenes.find(s => s.name == "settings");
 
         Cache.bot.sendMessage(msg.chat.id, "Выбери, что стоит настроить", {
             reply_markup: {
                 keyboard: settingsKeyboard(userData?.notifications ?? false),
                 remove_keyboard: true,
-                resize_keyboard: true
+                resize_keyboard: true,
+                //one_time_keyboard: true
             }
         });
-
-        // let replytext = "Включен режим настройки, укажи заново: \n\nКакой у тебя институт. Если твоего тут нет, значит он может появиться в будущем";
-
-        // Cache.bot.sendMessage(msg.chat.id, replytext, {
-        //     disable_web_page_preview: true,
-        //     reply_markup: {
-        //         inline_keyboard: instKeyboard,
-        //         remove_keyboard: true
-        //     }
-        // });
     }
 }
