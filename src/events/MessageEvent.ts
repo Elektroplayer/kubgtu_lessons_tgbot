@@ -16,6 +16,18 @@ export default class MessageEvent extends Event {
 
         if (!command) {
             if (msg.chat.type !== "group") await Cache.bot.sendMessage(msg.chat.id, "Неизвестная команда");
-        } else await command.exec(user, msg);
+        } else {
+            console.log( `${msg.from?.username ?? msg.from?.first_name ?? "Нет ника (?)"}: ${user.group?.name ?? "Не выбрана"}; ${msg.text};` );
+
+            await command.middlewares.filter(mw => mw.type == 0).forEach(async mw => {
+                await mw.exec(user, msg);
+            });
+
+            await command.exec(user, msg);
+
+            await command.middlewares.filter(mw => mw.type == 1).forEach(async mw => {
+                await mw.exec(user, msg);
+            });
+        }
     }
 }
