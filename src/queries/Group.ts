@@ -18,7 +18,10 @@ export default class GroupQuery extends Query {
      * Парсит группы с сайта для данного института и курса и возвращает массив с ними
      */
     async groupsParser(inst_id: number | string, kurs: number | string) {
-        let url = `https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&fak_id=${inst_id}&kurs=${kurs}&ugod=${new Date().getFullYear()}`;
+        let now = new Date();
+        let date = (now.getUTCFullYear() - (now.getUTCMonth() >= 6 ? 0 : 1)).toString();
+
+        let url = `https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&fak_id=${inst_id}&kurs=${kurs}&ugod=${date}`;
     
         let res = await fetch(url, {
             headers: {
@@ -33,14 +36,14 @@ export default class GroupQuery extends Query {
 
         if(!matches) return;
 
-        matches = matches.slice( matches.indexOf("<option value=\"\">Выберите группу</option>")+1, matches.length )
+        let groups = matches.slice( matches.indexOf("<option value=\"\">Выберите группу</option>")+1, matches.length )
             .map(elm => {
                 let r = elm.substring(elm.indexOf(">")+1, elm.length);
                 r = r.substring(0, r.indexOf("<"));
                 return r;
             });
     
-        return matches;
+        return groups;
     }
 
     async exec(user: User, query: CallbackQuery): Promise<void> {
@@ -85,8 +88,11 @@ export default class GroupQuery extends Query {
 
         keyboard.push(buffer);
 
+        let now = new Date();
+        let groupDate = (now.getUTCFullYear() - db.kurs + 1 - ( now.getUTCMonth() >= 6 ? 0 : 1)).toString().substring(2);
+
         Cache.bot.editMessageText(
-            text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + `\n\nВыбери свою группу. ${(new Date().getUTCFullYear()-db.kurs+1).toString().substring(2)}-...`,
+            text.split("\n\n").slice(0,text.split("\n\n").length-1).join("\n\n") + `\n\nВыбери свою группу. ${groupDate}-...`,
             {
                 chat_id: query.message.chat.id,
                 message_id: query.message.message_id,

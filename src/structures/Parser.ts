@@ -14,11 +14,14 @@ export default class Parser {
      * @param group Полный номер группы
      */
     constructor(instId: string | number, kurs: string | number, group: string, semestr = new Date().getMonth() > 5 ? 1 : 2) { // Конструктор делает ссылку, к которой будем обращаться
+        let now = new Date();
+        let date = now.getUTCFullYear() - (now.getUTCMonth() >= 6 ? 0 : 1);
+        
         this.URL = 'https://elkaf.kubstu.ru/timetable/default/time-table-student-ofo?iskiosk=0&' + 
             `fak_id=${instId}&` + 
             `kurs=${kurs}& ` +
             `gr=${group}&` +
-            `ugod=${new Date().getFullYear()}&` + 
+            `ugod=${date}&` +
             `semestr=${semestr}`;
     }
 

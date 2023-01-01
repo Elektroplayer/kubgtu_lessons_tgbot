@@ -18,13 +18,7 @@ export default class Group {
 
     async getTextSchedule(day = new Date().getDay(), week = new Date().getWeek()%2==0) {
         let out = "";
-
-        // if(!this.schedule || new Date().valueOf() - this.schedule.updateDate?.valueOf()! > 1000 * 60 * 60 * 24) {
-        //     let r = await this.updateSchedule();
-        //     if(r == null) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает..."
-        // }
-
-        let daySchedule = await this.getRawSchedule(day, week); //this.schedule!.days.find(elm => elm.daynum == day && elm.even == week)?.daySchedule ?? [];
+        let daySchedule = await this.getRawSchedule(day, week);
 
         if(daySchedule == null) return "<b>Произошла ошибка<b>\nСкорее всего сайт с расписанием не работает...";
 
