@@ -16,13 +16,6 @@ export const daysEven = [
     "Чёт Сб",
 ];
 
-export const messages = [
-    "Нравится бот? Поддержи рублём!\nqiwi.com/n/ELECTRO303",
-    "Достаточно одного рубля с 70 человек, чтобы бот продолжил работать ещё месяц!\nqiwi.com/n/ELECTRO303",
-    "Обычно закидывают на чай, но сюда закидывают на шаурму и хост)\nqiwi.com/n/ELECTRO303",
-    "Про ошибки/предложения можно написать сюда: @Elektroplayer_xXx",
-];
-
 export default {
     days,
     daysEven,

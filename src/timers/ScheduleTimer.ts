@@ -7,11 +7,13 @@ export default class TestTimer extends Timer {
     time = 0;
 
     async init() {
-        new CronJob('0 40 9 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 9});
-        new CronJob('0 20 11 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 11});
-        new CronJob('0 20 13 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 12});
-        new CronJob('0 00 15 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 14});
-        new CronJob('0 40 16 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 16});
+        new CronJob('0 40 9 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 9}); // После первой пары
+        new CronJob('0 20 11 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 11}); // второй
+        new CronJob('0 20 13 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 12}); // третьей
+        new CronJob('0 00 15 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 14}); // четвёртой
+        new CronJob('0 40 16 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 16}); // пятой
+        new CronJob('0 20 18 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 18}); // шестой
+        new CronJob('0 00 20 * * 1-6', this.exec, null, true, 'Europe/Moscow', {time: 19}); // и даже седьмой
     }
 
     async exec() {
@@ -32,11 +34,11 @@ export default class TestTimer extends Timer {
             let todayScheduleArray = await user.group.getRawSchedule(dateToday.getDay(), dateToday.getWeek()%2==0); // Смотрим сегодняшнее расписание
 
             // Забиваем если
-            if(
-                todayScheduleArray == null || // ...не нашлось
-                (todayScheduleArray.length == 0 && this.time != 9) || // ...расписания нет, а время уже не 9
-                (this.time != +todayScheduleArray[todayScheduleArray.length-1].time.split(":")[1].split(" - ")[1]) // ...время не подходит (отправляем только, после пар)
-            ) return;
+            if(todayScheduleArray == null) return; // ...расписания нет вообще.
+
+            if(todayScheduleArray.length == 0) {
+                if(this.time != 9) return // ...расписания нет, а время уже не 9
+            } else if(this.time != +todayScheduleArray[todayScheduleArray.length-1].time.split(":")[1].split(" - ")[1]) return; // ...ещё не время (отправляем только, после пар)
 
             console.log(`${user.id}, ${user.group?.name}`)
 

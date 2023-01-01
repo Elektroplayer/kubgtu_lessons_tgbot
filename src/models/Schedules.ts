@@ -22,6 +22,6 @@ const schema = new mongoose.Schema({
             flow: Boolean
         }]
     }]
-}, { collection: "schedule" });
+}, { collection: "schedules" });
 
-export default mongoose.model("schedule", schema);
+export default mongoose.model("schedules", schema);

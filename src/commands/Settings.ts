@@ -19,7 +19,7 @@ export default class TodayCommand extends Command {
         let userData = await Users.findOne({userId: user.id}).exec()
 
         if (!userData) {
-            Cache.bot.sendMessage(msg.chat.id, "Сначала настрой бота");
+            Cache.bot.sendMessage(msg.chat.id, "Сначала настрой бота! /start");
 
             return;
         }
